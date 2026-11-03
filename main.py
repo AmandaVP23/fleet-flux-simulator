@@ -1,5 +1,6 @@
 import osrm
 import random
+import requests
 
 def locate(accumulated, total_meters, start_index):
     for i in range(start_index, len(accumulated)):
@@ -41,8 +42,13 @@ def calculate_target_spec(seg_max_speed, driver_factor):
 def main():
     print("Hello from fleet-flux-simulator!")
 
+    r = requests.get("https://localhost:8443/simulator/ping",
+                 cert=("certs/simulator.crt", "certs/simulator.key"),
+                 verify="certs/ca.crt")
+    print(r.status_code, r.text)
+
     engine = osrm.OSRM(
-        storage_config="osrm-data/iberia.osrm",
+        storage_config="osrm-data/portugal-spain.osrm",
         algorithm="MLD",
         use_shared_memory=False,
     )
@@ -54,7 +60,7 @@ def main():
             # (-8.927016561382153, 39.33275841892133)
         ],
         # alternatives=2,
-        overview="git rev-list --objects HEAD | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | sort -k3 -n | tail -20",
+        overview="full",
         geometries="geojson",
         steps=True,
         # number_of_alternatives=3,
@@ -110,8 +116,6 @@ def main():
             current_speed = max(current_speed - max_deceleration * 5, target_speed)
 
         print("current", current_speed)
-    
-
     
 
 

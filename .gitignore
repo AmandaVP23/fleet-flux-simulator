@@ -1,1 +1,3 @@
 osrm-data/
+*.crt
+*.key

@@ -336,6 +336,10 @@ kill $(lsof -ti :5000)
 - Ensure you have sufficient free disk space for the original extracts, merged PBF and generated OSRM dataset.
 - For production, consider running OSRM as a background service and monitoring its memory consumption.
 
+## Problems
+To avoid having versions problems:
+```uv run python -m osrm osrm-extract -p "$(brew --prefix osrm-backend)/share/osrm/profiles/car.lua" osrm-data/portugal-spain.osm.pbf```
+
 ## References
 
 - OSRM Backend: https://github.com/Project-OSRM/osrm-backend
