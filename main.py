@@ -38,6 +38,13 @@ def calculate_target_spec(seg_max_speed, driver_factor):
     return seg_max_speed * factor
 
 
+def load_vehicles():
+    # todo - put variable in .env
+    r = requests.get("https://localhost:8443/simulator/ping",
+                     cert=("certs/simulator.crt", "certs/simulator.key"),
+                     verify="certs/ca.crt")
+
+
 
 def main():
     print("Hello from fleet-flux-simulator!")
