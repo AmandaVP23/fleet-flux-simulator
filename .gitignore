@@ -1,3 +1,5 @@
 osrm-data/
 *.crt
 *.key
+
+.env
