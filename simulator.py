@@ -2,7 +2,7 @@ import asyncio
 import random
 import polyline
 from driver import calculate_target_speed, get_driver_factor, step_speed
-from route_math import get_accumulated_distance, locate
+from route_math import get_accumulated_distance, locate, position_at
 from datetime import datetime, timezone, timedelta
 from backend_client import get_route_details
 from config import TICK_SECONDS
@@ -63,7 +63,7 @@ class Simulator:
         distance_meters = route_details["segmentDistancesInMeters"]
         duration_seconds = route_details["segmentDurationsInSeconds"]
     
-        coordinates = polyline.decode(route_details["geometry"], route_details["geometryPrecision"]);
+        coordinates = polyline.decode(route_details["geometry"], route_details["geometryPrecision"], geojson=True)  # (lon, lat)
         accumulated_distance = get_accumulated_distance(distance_meters);
 
         meters = 0;
@@ -85,14 +85,7 @@ class Simulator:
                 return
 
             current_position_index = locate_result[0]
-            distance_seg_value = distance_meters[current_position_index]
-            offset = locate_result[1] / distance_seg_value
-            coordinates_seg = coordinates[current_position_index]
-            coordinates_seg_next = coordinates[current_position_index + 1]
-            delta_long = coordinates_seg_next[0] - coordinates_seg[0]
-            delta_lat = coordinates_seg_next[1] - coordinates_seg[1]
-            long = coordinates_seg[0] + (delta_long * offset)
-            lat = coordinates_seg[1] + (delta_lat * offset)
+            long, lat = position_at(coordinates, distance_meters, current_position_index, locate_result[1])
             target_speed = calculate_target_speed(speed_seg, driver_factor, profile["max_speed"])
 
             current_speed = step_speed(current_speed, target_speed,

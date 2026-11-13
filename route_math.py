@@ -21,6 +21,13 @@ def get_accumulated_distance(distance):
 
 
 def position_at(coordinates, distance, segment_index, offset_meters):
-    """Returns (lon, lat) at offset_meters into the given segment."""
-    # todo - move the interpolation from the commented block in main.py
-    raise NotImplementedError
+    """
+    coordinates - list of (lon, lat) points
+    distance - length in meters of each segment (coordinates[i] -> coordinates[i + 1])
+    Returns (lon, lat) at offset_meters into the given segment.
+    """
+    ratio = offset_meters / distance[segment_index]
+    lon1, lat1 = coordinates[segment_index]
+    lon2, lat2 = coordinates[segment_index + 1]
+
+    return (lon1 + (lon2 - lon1) * ratio, lat1 + (lat2 - lat1) * ratio)
