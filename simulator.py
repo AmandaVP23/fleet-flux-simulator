@@ -2,7 +2,7 @@ import asyncio
 import random
 import polyline
 from driver import calculate_target_speed, get_driver_factor, step_speed
-from route_math import get_accumulated_distance, locate, position_at
+from route_math import get_accumulated_distance, get_route_average_speed, locate, position_at
 from datetime import datetime, timezone, timedelta
 from backend_client import get_route_details
 from config import TICK_SECONDS
@@ -67,27 +67,28 @@ class Simulator:
         accumulated_distance = get_accumulated_distance(distance_meters);
 
         meters = 0;
-        current_speed = (distance_meters[0] / duration_seconds[0]) / 2;
+        # todo protect
+        current_speed = get_route_average_speed(route["distanceMeters"], route["durationSeconds"]) / 2;
         target_speed = 0;
         locate_result = locate(accumulated_distance, meters, 0)
         current_position_index = locate_result[0]
-        run = True;
 
-        while run == True:
-            speed_seg = distance_meters[locate_result[0]] / duration_seconds[locate_result[0]]
-            variated_speed = speed_seg * random.uniform(0.75, 1.3) # m/s
-    
-            meters += (variated_speed * TICK_SECONDS)
+        while True:
+            # 1. speed: aim for the current segment's speed, limited by the vehicle's acceleration/braking
+            speed_seg = distance_meters[current_position_index] / duration_seconds[current_position_index]
+            target_speed = calculate_target_speed(speed_seg, driver_factor, profile["max_speed"])
+            current_speed = step_speed(current_speed, target_speed,
+                                       profile["max_acceleration"], profile["max_deceleration"],
+                                       TICK_SECONDS)
+
+            # 2. position: advance by the speed we actually reached
+            meters += current_speed * TICK_SECONDS
             locate_result = locate(accumulated_distance, meters, current_position_index)
 
-            if locate_result == None:
-                run = False
+            if locate_result is None:
                 return
 
             current_position_index = locate_result[0]
             long, lat = position_at(coordinates, distance_meters, current_position_index, locate_result[1])
-            target_speed = calculate_target_speed(speed_seg, driver_factor, profile["max_speed"])
 
-            current_speed = step_speed(current_speed, target_speed,
-                                       profile["max_acceleration"], profile["max_deceleration"],
-                                       TICK_SECONDS)
+            await asyncio.sleep(TICK_SECONDS)

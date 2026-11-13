@@ -2,6 +2,7 @@ import asyncio
 
 from backend_client import load_devices, load_initial_routes
 from simulator import Simulator
+from route_math import get_route_average_speed
 
 
 def main():

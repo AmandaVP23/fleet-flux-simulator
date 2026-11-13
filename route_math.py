@@ -31,3 +31,7 @@ def position_at(coordinates, distance, segment_index, offset_meters):
     lon2, lat2 = coordinates[segment_index + 1]
 
     return (lon1 + (lon2 - lon1) * ratio, lat1 + (lat2 - lat1) * ratio)
+
+
+def get_route_average_speed(distance, duration):
+    return distance / duration
