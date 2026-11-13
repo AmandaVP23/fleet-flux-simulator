@@ -8,10 +8,12 @@ def main():
     print("Hello from fleet-flux-simulator!")
 
     devices = load_devices();
-    routes = load_initial_routes();
+    # routes = load_initial_routes();
 
-    simulator = Simulator(routes)
-    asyncio.run(simulator.run())
+    print(devices)
+
+    # simulator = Simulator(routes, devices)
+    # asyncio.run(simulator.run())
 
     # route = result["routes"][0]
     # distance = route["legs"][0]["annotation"]["distance"]

@@ -22,4 +22,9 @@ def load_devices():
 
 
 def get_route_details(routeId):
-    return _get(f"/simulator/routes/{routeId}/details")
+    r = _session.get(f"/simulator/routes/{routeId}/details")
+
+    if r.status_code == 200:
+        return r.json()
+
+    return None
