@@ -66,14 +66,20 @@ class Simulator:
         coordinates = polyline.decode(route_details["geometry"], route_details["geometryPrecision"], geojson=True)  # (lon, lat)
         accumulated_distance = get_accumulated_distance(distance_meters);
 
-        meters = 0;
-        # todo protect
-        current_speed = get_route_average_speed(route["distanceMeters"], route["durationSeconds"]) / 2;
+        route_average_speed = get_route_average_speed(route["distanceMeters"], route["durationSeconds"])
+        meters = 0
+        current_speed = route_average_speed / 2;
         target_speed = 0;
         locate_result = locate(accumulated_distance, meters, 0)
         current_position_index = locate_result[0]
 
         while True:
+            duration = duration_seconds[current_position_index]
+            if duration > 0:
+                speed_seg = distance_meters[current_position_index] / duration
+            else:
+                speed_seg = route_average_speed
+
             # 1. speed: aim for the current segment's speed, limited by the vehicle's acceleration/braking
             speed_seg = distance_meters[current_position_index] / duration_seconds[current_position_index]
             target_speed = calculate_target_speed(speed_seg, driver_factor, profile["max_speed"])
@@ -86,6 +92,7 @@ class Simulator:
             locate_result = locate(accumulated_distance, meters, current_position_index)
 
             if locate_result is None:
+                # todo finish and send destination point
                 return
 
             current_position_index = locate_result[0]
