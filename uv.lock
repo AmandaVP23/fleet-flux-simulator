@@ -110,12 +110,14 @@ name = "fleet-flux-simulator"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "polyline" },
     { name = "python-dotenv" },
     { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "polyline", specifier = ">=2.0.5" },
     { name = "python-dotenv", specifier = ">=1.2.4" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
@@ -127,6 +129,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f5/08/8eea9d4b8302028f3abb2c0813953f7aec26d33b7a8960ed760e65ff29fa/idna-3.20.tar.gz", hash = "sha256:a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44", size = 216463, upload-time = "2026-09-17T14:11:04.752Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl", hash = "sha256:ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c", size = 69583, upload-time = "2026-09-17T14:11:03.168Z" },
+]
+
+[[package]]
+name = "polyline"
+version = "2.0.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6e/5e/2bee886001291f0235fe070cc8a7c498260db2b6cd483e94951423311bca/polyline-2.0.5.tar.gz", hash = "sha256:92deedee05d52918e83cf7607011ba1cc52907932e7228ba6e28f4a0a8c6370d", size = 6675, upload-time = "2026-11-09T18:41:11.388Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/40/2440f2e5dc845fc6b980c8c1b956f8bb19ffa8454bd2fef86fae93b7ef90/polyline-2.0.5-py3-none-any.whl", hash = "sha256:dc3f4dbd83bbd7b2e6aec3d2980757f262c300fb739d68d43984da663d72bcc9", size = 6217, upload-time = "2026-11-09T18:41:09.852Z" },
 ]
 
 [[package]]
