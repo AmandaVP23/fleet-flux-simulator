@@ -3,3 +3,4 @@ osrm-data/
 *.key
 
 .env
+__pycache__/
