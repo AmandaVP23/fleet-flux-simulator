@@ -1,0 +1,8 @@
+osrm-data/
+*.crt
+*.key
+
+.env
+__pycache__/
+
+.DS_Store
