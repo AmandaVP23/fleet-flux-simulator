@@ -8,13 +8,20 @@ from route_math import get_route_average_speed
 def main():
     print("Hello from fleet-flux-simulator!")
 
-    devices = load_devices();
-    routes = load_initial_routes();
+    devices = load_devices()
+    routes = load_initial_routes()
 
     print(devices)
 
     simulator = Simulator(routes, devices)
-    asyncio.run(simulator.run())    
+    simulator.start()
+    
+    try:
+        asyncio.run(simulator.run())
+    except KeyboardInterrupt:
+        pass
+    finally:
+        simulator.stop()
 
 
 if __name__ == "__main__":

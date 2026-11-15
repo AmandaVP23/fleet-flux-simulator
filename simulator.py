@@ -7,6 +7,8 @@ from datetime import datetime, timezone, timedelta
 from backend_client import get_route_details
 from config import TICK_SECONDS
 from profiles import get_profile
+from device import SimulatedDevice
+
 
 MAX_OFFSET = timedelta(hours=1)
 
@@ -15,6 +17,7 @@ class Simulator:
     def __init__(self, routes, devices):
         # the device is the actor: routes only carry the vehicle, so go vehicle -> device
         self.device_by_vehicle = {d["vehicle"]["id"]: d for d in devices}
+        self.sim_devices = {d["deviceId"]: SimulatedDevice.from_api(d) for d in devices}
         self.pending = {}
         for r in routes:
             if r["vehicle"]["id"] in self.device_by_vehicle:
@@ -33,11 +36,20 @@ class Simulator:
             self.start_times[route["id"]] = scheduled + timedelta(seconds=offset)
         return self.start_times[route["id"]]
 
+    def start(self):
+        for d in self.sim_devices.values():
+            d.connect()
+
+    def stop(self):
+        for d in self.sim_devices.values():
+            d.disconnect()
+
     async def run(self):
         while True:
             now = datetime.now(timezone.utc)
             for route in list(self.pending.values()):
                 device = self.device_by_vehicle[route["vehicle"]["id"]]
+                print("trying to run")
                 if (self._actual_start(route) <= now and device["deviceId"] not in self.busy_devices):
                     self.pending.pop(route["id"])
                     self.busy_devices.add(device["deviceId"])
@@ -46,7 +58,8 @@ class Simulator:
             await asyncio.sleep(10)
 
     async def _run_and_release(self, route, device):
-        """Runs the route and always frees the device, even on early return or error."""
+        """Runs the route and frees the device"""
+        print("inside run_and_release")
         try:
             await self.run_route(route, device)
         finally:
@@ -97,5 +110,7 @@ class Simulator:
 
             current_position_index = locate_result[0]
             long, lat = position_at(coordinates, distance_meters, current_position_index, locate_result[1])
+            self.sim_devices[device["deviceId"]].publish_position(lat=lat, lon=long, speed=current_speed)
+
 
             await asyncio.sleep(TICK_SECONDS)
