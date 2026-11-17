@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 OSRM_SERVER_URL = os.environ["OSRM_SERVER_URL"].rstrip("/")
+MQTT_CONFIG_TOPICS = ["fleet/config/devices", "fleet/config/routes"]
 BACKEND_URL = os.getenv("BACKEND_URL", "https://localhost:8443").rstrip("/")
 TICK_SECONDS = float(os.getenv("TICK_SECONDS", "5"))
 MQTT_HOST = os.getenv("MQTT_HOST", "localhost")

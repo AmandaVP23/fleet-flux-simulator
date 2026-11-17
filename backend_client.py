@@ -21,6 +21,11 @@ def load_devices():
     return _get("/simulator/devices")
 
 
+def get_route_summary(route_id):
+    r = _session.get(f"{BACKEND_URL}/simulator/routes/{route_id}/summary", timeout=10)
+    return r.json() if r.status_code == 200 else None
+
+
 def get_route_details(routeId):
     r = _session.get(f"{BACKEND_URL}/simulator/routes/{routeId}/details")
 

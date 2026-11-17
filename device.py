@@ -31,7 +31,6 @@ class SimulatedDevice:
         self.client.disconnect()
 
     def publish_position(self, lat, lon, speed):
-        print("publish to mqtt")
         payload = {
             "vehicleId": self.vehicle_id,
             "timestamp": datetime.now(timezone.utc).isoformat(),
