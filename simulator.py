@@ -59,8 +59,8 @@ class Simulator:
             now = datetime.now(timezone.utc)
             for route in list(self.pending.values()):
                 device = self.device_by_vehicle[route["vehicle"]["id"]]
-                print("trying to run")
                 if (self._actual_start(route) <= now and device["deviceId"] not in self.busy_devices):
+                    print(f"Start route {route["id"]}")
                     self.pending.pop(route["id"])
                     self.busy_devices.add(device["deviceId"])
                     asyncio.create_task(self._run_and_release(route, device))
